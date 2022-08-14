@@ -10,37 +10,109 @@ namespace UnicodeCharExplorer
     {
         static void Main(string[] args)
         {
-            Console.OutputEncoding = Encoding.Unicode;
-
-            ushort minBorder = 0x0030;
-            ushort maxBorder = 0x0060;
-
-
-            string userInputStr = Console.ReadLine();
-            
-            ushort number;
-            bool success = ushort.TryParse(userInputStr, out number);
-            if (success)
+            Console.OutputEncoding = Encoding.UTF8;
+            Console.WriteLine("Input from: to: borders number over space (Example: 1 100)");
+            string userInput = Console.ReadLine();
+            string[] inputBorders;
+            inputBorders = userInput.Split(' ');
+            int fromBorder = 0;
+            int toBorder = 0 ;
+            if (inputBorders.Length != 0)
             {
-                Console.WriteLine("Successfull parse");
+                int number;
+                bool success = int.TryParse(inputBorders[0], out number);
+                if (success)
+                {
+                    fromBorder = number;
+                }
+                else
+                {
+                    Console.WriteLine("Parsing error!");
+                }
+
+                int number2;
+                bool success2 = int.TryParse(inputBorders[1], out number2);
+                if (success2)
+                {
+                    toBorder = number2;
+                }
+                else
+                {
+                    Console.WriteLine("Parsing error!");
+                }
+
+                
+
+                if (fromBorder > toBorder)
+                { 
+                    (fromBorder,toBorder) = (toBorder,fromBorder);
+                }
             }
             else
             {
-                Console.WriteLine($"Attempted conversion of '{userInputStr ?? "<null>"}' failed.");
+                Console.WriteLine("No borders inputed !");
             }
 
-            Console.WriteLine(number);
+            Console.WriteLine("BORDERS FROM {0} TO {1}", fromBorder, toBorder);
+            List<string> charStringsList = new List<string>();
 
-
-            Console.WriteLine(number);
-
-
-            for (ushort i = minBorder; i <= maxBorder; i++)
+            for (int i = fromBorder; i <= toBorder; i++)
             {
-                Console.WriteLine("{0} - ({1}) [{1:X}]", (char)i, i);
+                String charString = String.Format("{0} - ({1}) [{1:X}]", (char)i, i);
+                charStringsList.Add(charString);
             }
 
-            Console.ReadKey();
+            Console.WriteLine("Input Columns Count:");
+            string userInputColumns = Console.ReadLine();
+            Console.Clear();
+            int numberIntTest;
+            int userInputColumnsInt;
+            bool success3 = int.TryParse(userInputColumns, out numberIntTest);
+            if (success3)
+            {
+                userInputColumnsInt = numberIntTest;
+            }
+            else
+            {
+                userInputColumnsInt = 3;
+                Console.WriteLine("Parsing error!");
+            }
+
+            int columsCount;
+            if (userInputColumnsInt >= 2)
+            {
+                columsCount = userInputColumnsInt;
+            }
+            else
+            {
+                columsCount = 2;
+            }
+
+            int rowsCount = (charStringsList.Count / columsCount) ;
+
+            for (int i = 0; i < rowsCount; i++)
+            {
+                String outputString = "";
+                for (int j = 0; j < columsCount; j++)
+                {
+                    outputString = outputString + charStringsList[(rowsCount * j) + i] + "\t";
+                }
+                Console.WriteLine(outputString);
+            }
+            if ((columsCount * rowsCount) < charStringsList.Count)
+            {
+                int lostElementsFrom = columsCount * rowsCount;
+                int lostElementsTo = charStringsList.Count;
+                for (int k = lostElementsFrom; k < lostElementsTo; k++)
+                {
+                    Console.WriteLine(charStringsList[k]);
+                }
+
+            }
+
+
+
+            Console.ReadLine();
         }
         
     }
